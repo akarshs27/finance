@@ -79,6 +79,30 @@ async (c) => {
         return c.json({data});
     }
 )
+.post("/bulk-create", 
+zValidator(
+    "json",
+    z.array(
+        insertTransactionSchema.omit({
+            id: true
+        }),
+    )
+),
+async (c) => {
+    const values = c.req.valid("json");
+    const data  = await db
+    .insert(transactions)
+    .values(
+        values.map((value) => ({
+            id: createId(),
+            ...value
+        }))
+    )
+    .returning();
+
+    return c.json({data});
+}
+)
 .post("/", zValidator("json", insertTransactionSchema.omit({
     id: true
 })) ,async (c) => {
