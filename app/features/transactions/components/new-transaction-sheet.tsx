@@ -5,7 +5,7 @@ import { useNewTransactions } from "../hooks/use-new-transactions"
 import AccountForm from "./transaction-form";
 import {  insertTransactionSchema } from "@/database/db/schema";
 import { z } from "zod";
-import {  useCreateTransaction } from "../api/use-create-account";
+import {  useCreateTransaction } from "../api/use-create-transaction";
 import { useCreateAccount } from "../../accounts/api/use-create-account";
 import { useGetAccount } from "../../accounts/api/use-get-account";
 import { useGetAccounts } from "../../accounts/api/use-get-accounts";
