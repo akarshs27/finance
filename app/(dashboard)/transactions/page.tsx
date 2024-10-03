@@ -1,7 +1,7 @@
 "use client";
 
-import { useNewAccount } from "@/app/features/accounts/hooks/use-new-account";
 import { Button } from "@/components/ui/button";
+import { transactions as transactionsSchema } from "@/database/db/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, PlusIcon } from "lucide-react";
 import { columns } from "./columns";
@@ -13,6 +13,9 @@ import { useBulkDeleteTransactions } from "@/app/features/transactions/api/use-b
 import { useState } from "react";
 import { UploadButton } from "./upload-button";
 import { ImportCard } from "./import-card";
+import { useSelectAccount } from "@/app/features/transactions/hooks/use-select-account";
+import { toast } from "sonner";
+import { useBulkCreateTransactions } from "@/app/features/transactions/api/use-bulk-create-transactions";
 
 enum VARIANTS {
     LIST = "LIST",
@@ -27,6 +30,7 @@ const INITIAL_IMPORT_RESULTS = {
 
 
 const TransactionsPage = () => {
+    const [AccountDialog, confirm] = useSelectAccount();
     const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
     const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
 
@@ -42,10 +46,32 @@ const TransactionsPage = () => {
 
     const newTransaction = useNewTransactions();
     const transactionsQuery = useGetTransactions();
+    const bulkCreateTransactions = useBulkCreateTransactions();
     const deleteTransactions = useBulkDeleteTransactions();
     const transactions = transactionsQuery.data || [];
 
     const isDisabled = transactionsQuery.isLoading || deleteTransactions.isPending;
+
+    const onSubmitImport = async (
+        values: typeof transactionsSchema.$inferInsert[]
+    ) => {
+        const accountId = await confirm();
+
+        if(!accountId) {
+            return toast.error("Please select an account to continue");
+        }
+
+        const data = values.map((value) => ({
+            ...value,
+            accountId: accountId as string
+        }))
+
+        bulkCreateTransactions.mutate(data, {
+            onSuccess: () => {
+                onCancelImport();
+            }
+        })
+    }
 
     if(transactionsQuery.isLoading) {
         <div className="max-w-screen-2xl mx-auto pb-10 -mt-24">
@@ -65,10 +91,11 @@ const TransactionsPage = () => {
     if(variant === VARIANTS.IMPORT) {
         return (
             <>
+             <AccountDialog />
              <ImportCard  
               data= {importResults.data}
               onCancel={onCancelImport}
-              onSubmit={() => {}}
+              onSubmit={onSubmitImport}
              />
             </>
         )
