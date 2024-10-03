@@ -1,6 +1,7 @@
 "use client";
 
 import { useOpenAccount } from "@/app/features/accounts/hooks/use-open-account";
+import { useOpenTransaction } from "@/app/features/transactions/hooks/use-open-transaction";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Edit, MoreHorizontal } from "lucide-react";
@@ -10,7 +11,7 @@ type Props = {
 }
 
 const Actions = ({id}: Props) => {
-    const {onOpen,isOpen} = useOpenAccount();
+    const {onOpen,isOpen} = useOpenTransaction();
 
     return (
         <>
@@ -24,7 +25,6 @@ const Actions = ({id}: Props) => {
                     <DropdownMenuItem
                      disabled={false}
                      onClick={() => {
-                        console.log("opened", id);
                         onOpen(id);
                      }}
                      >

@@ -3,10 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { QueryProvider } from "@/providers/query-provider";
-import NewAccountSheet from "./features/accounts/components/new-account-sheet";
 import { Toaster } from "@/components/ui/sonner";
-import EditAccountSheet from "./features/accounts/components/edit-account-sheet";
-import NewTransactionSheet from "./features/transactions/components/new-transaction-sheet";
+import SheetProvider from "@/providers/sheet-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,9 +34,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
-        <NewAccountSheet />
-        <EditAccountSheet />
-        <NewTransactionSheet />
+          <SheetProvider />
           <Toaster />
         {children}
         </QueryProvider>
