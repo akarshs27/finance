@@ -3,6 +3,7 @@ import Navigation from "../Navigation"
 import HeaderLogo from "./header-logo"
 import { Loader2 } from "lucide-react"
 import WelcomeMessage from "./welcome-msg"
+import { Filters } from "./Filters"
 
 const Header = () => {
     return (
@@ -21,6 +22,7 @@ const Header = () => {
                     </ClerkLoading>
                 </div>
                 <WelcomeMessage />
+                <Filters />
             </div>
         </header>
     )
